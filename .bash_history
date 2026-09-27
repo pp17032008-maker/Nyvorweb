@@ -43,3 +43,4 @@ ls
 git add .
 git commit -m "fix project build path"
 git push origin main
+cd $(find /sdcard/Download /sdcard/Download -maxdepth 2 -type d -name "*bolt*" 2>/dev/null | head  -n 1) && git add . && git commit -m "Fix vite config base path" && git push origin main
