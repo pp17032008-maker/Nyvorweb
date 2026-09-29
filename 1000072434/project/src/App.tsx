@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from './supabase';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Header } from '@/components/Header';
