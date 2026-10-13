@@ -44,3 +44,29 @@ git add .
 git commit -m "fix project build path"
 git push origin main
 cd $(find /sdcard/Download /sdcard/Download -maxdepth 2 -type d -name "*bolt*" 2>/dev/null | head  -n 1) && git add . && git commit -m "Fix vite config base path" && git push origin main
+git add.
+git add .
+git commit -m "Fix supabase crash and add fallbacks"
+git push origin
+git add vit.config.ts
+git add vite.config.ts
+git add vite.config.ts
+git .add vite.config.ts
+git add vite.config.ts
+find / -name "vite.config.ts" 2>/dev/null
+/sdcard/.../public/1000072434/project/vite.config.ts
+cd /sdcard/.../public/1000072434/project
+ls
+cd /root/1000072434/project
+ls
+git add vit.config.ts
+git add vite.config.ts
+git commit -m "Fix vite.config.ts duplicate export"
+git push origin main
+git add App.tsx
+git commit -m "Fix missing useCallback import"
+git push origin main
+cd /root/1000072434/project
+git add src/App.tsx
+git commit -m "Fix missing useCallbackimport"
+git push origin main

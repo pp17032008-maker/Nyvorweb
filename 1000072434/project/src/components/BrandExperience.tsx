@@ -180,41 +180,7 @@ export function BrandExperience() {
         </div>
       </section>
 
-      {/* ============================================ */}
-      {/* 5. What NYVOR Stands For                    */}
-      {/* ============================================ */}
-      <section id="values" className="relative py-24 lg:py-32 border-hairline-b bg-ink-raised/30 grain">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[600px] w-[600px] rounded-full bg-brand/[0.03] blur-[140px] pointer-events-none" />
-
-        <div className="relative mx-auto max-w-[1600px] px-5 lg:px-8">
-          <div className="text-center mb-16 space-y-4">
-            <p className="text-xs tracking-wide-label text-brand uppercase">Core Values</p>
-            <h2 className="font-display text-4xl lg:text-6xl tracking-ultra-tight text-accent">
-              WHAT NYVOR STANDS FOR
-            </h2>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-px bg-line border-hairline rounded-sm overflow-hidden">
-            {principles.map((principle) => (
-              <div
-                key={principle.title}
-                className="group bg-ink-base p-8 lg:p-12 hover:bg-ink-raised transition-colors duration-500 relative"
-              >
-                <div className="absolute top-0 left-0 h-px w-0 bg-brand group-hover:w-full transition-all duration-700" />
-                <div className="space-y-4">
-                  <h3 className="font-display text-2xl lg:text-3xl text-accent tracking-tight group-hover:text-brand transition-colors duration-300">
-                    {principle.title}
-                  </h3>
-                  <div className="h-px w-8 bg-line-strong group-hover:bg-brand/40 transition-colors duration-300" />
-                  <p className="text-sm text-accent-muted leading-relaxed">
-                    {principle.desc}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      
 
       {/* ============================================ */}
       {/* 6. Our Customers                            */}
@@ -241,48 +207,7 @@ export function BrandExperience() {
         </div>
       </section>
 
-      {/* ============================================ */}
-      {/* 7. Our Vision                               */}
-      {/* ============================================ */}
-      <section id="vision" className="relative py-24 lg:py-32 border-hairline-b overflow-hidden">
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[500px] w-[500px] rounded-full bg-brand/[0.04] blur-[120px]" />
-        </div>
-
-        <div className="relative mx-auto max-w-4xl px-5 lg:px-8 text-center space-y-8">
-          <p className="text-xs tracking-wide-label text-brand uppercase">Looking Forward</p>
-          <h2 className="font-display text-5xl lg:text-7xl tracking-ultra-tight text-accent leading-[0.95]">
-            OUR VISION
-          </h2>
-          <p className="text-lg text-accent-muted leading-[1.7] max-w-2xl mx-auto">
-            The long-term vision of NYVOR extends beyond becoming another clothing label.
-          </p>
-          <p className="text-base text-accent-muted leading-[1.7] max-w-2xl mx-auto">
-            We aim to develop a complete fashion and lifestyle company with a strong identity, innovative products, responsible growth, and an expanding presence in India and international markets.
-          </p>
-          <p className="text-base text-accent-muted leading-[1.7] max-w-2xl mx-auto">
-            From online collections to future retail experiences, collaborations, manufacturing capabilities, and new product categories, every stage will be built around the same foundation:
-          </p>
-
-          <div className="grid sm:grid-cols-3 gap-px bg-line border-hairline rounded-sm overflow-hidden pt-8">
-            {[
-              'CREATE WITH PURPOSE.',
-              'BUILD WITH QUALITY.',
-              'EVOLVE WITHOUT LIMITS.',
-            ].map((phrase) => (
-              <div key={phrase} className="bg-ink-base p-8 group hover:bg-ink-raised transition-colors duration-500">
-                <p className="font-display text-base lg:text-lg text-accent tracking-tight group-hover:text-brand transition-colors duration-300">
-                  {phrase}
-                </p>
-              </div>
-            ))}
-          </div>
-
-          <p className="font-display text-2xl lg:text-3xl text-accent tracking-tight pt-4">
-            Founded in India. Built for the world.
-          </p>
-        </div>
-      </section>
+     
 
       {/* ============================================ */}
       {/* 8. Official Contact                         */}
