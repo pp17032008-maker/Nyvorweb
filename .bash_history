@@ -70,3 +70,6 @@ cd /root/1000072434/project
 git add src/App.tsx
 git commit -m "Fix missing useCallbackimport"
 git push origin main
+git add .
+git commit  -m "Remove Our Visions and Our Cudtomers sections"
+git push origin main

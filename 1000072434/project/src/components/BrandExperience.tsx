@@ -183,33 +183,6 @@ export function BrandExperience() {
       
 
       {/* ============================================ */}
-      {/* 6. Our Customers                            */}
-      {/* ============================================ */}
-      <section id="customers" className="relative py-24 lg:py-32 border-hairline-b">
-        <div className="mx-auto max-w-3xl px-5 lg:px-8 text-center space-y-6">
-          <p className="text-xs tracking-wide-label text-brand uppercase">Community</p>
-          <h2 className="font-display text-4xl lg:text-5xl tracking-ultra-tight text-accent leading-tight">
-            OUR CUSTOMERS
-          </h2>
-          <div className="h-px w-16 bg-brand/40 mx-auto" />
-          <p className="text-lg text-accent-muted leading-[1.7]">
-            NYVOR is created for individuals who appreciate modern fashion, streetwear, quality, and distinctive personal style.
-          </p>
-          <p className="text-base text-accent-muted leading-[1.7]">
-            Our audience includes young people, students, creators, athletes, entrepreneurs, professionals, and anyone who wants their clothing to reflect a confident and contemporary identity.
-          </p>
-          <p className="text-base text-accent-muted leading-[1.7]">
-            NYVOR is not intended to define how someone should look.
-          </p>
-          <p className="font-display text-2xl lg:text-3xl text-accent tracking-tight">
-            It is designed to give people another way to define themselves.
-          </p>
-        </div>
-      </section>
-
-     
-
-      {/* ============================================ */}
       {/* 8. Official Contact                         */}
       {/* ============================================ */}
       <section id="contact-info" className="relative py-24 lg:py-32 border-hairline-b bg-ink-raised/30 grain">
