@@ -1,76 +1,121 @@
-import { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Plus, Check, ChevronDown } from 'lucide-react';
-import { products, categories, sortOptions, type Category, type Product } from '@/data/products';
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
+interface Variant {
+  id: string;
+  color: string;
+  size: string;
+  qikink_sku: string;
+}
+
+interface Product {
+  id: string;
+  name: string;
+  description: string;
+  selling_price: number;
+  category: string;
+  product_variants: Variant[];
+}
 
 type Props = {
-  onAddToBag: (product: Product) => void;
+  onAddToBag?: (product: any) => void;
 };
 
 export function ProductGrid({ onAddToBag }: Props) {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
   const [activeCategory, setActiveCategory] = useState<string>('All Drops');
   const [sortBy, setSortBy] = useState<string>('Featured');
-  const [sortOpen, setSortOpen] = useState(false);
+  const [sortOpen, setSortOpen] = useState<boolean>(false);
   const [added, setAdded] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  let filtered = activeCategory === 'All Drops'
-    ? products
-    : products.filter((p) => p.category === activeCategory);
+  useEffect(() => {
+    async function fetchProducts() {
+      const { data, error } = await supabase
+        .from('products')
+        .select(`
+          id,
+          name,
+          description,
+          selling_price,
+          category,
+          product_variants (
+            id,
+            color,
+            size,
+            qikink_sku
+          )
+        `);
+
+      if (error) {
+        console.error('Error fetching products from Supabase:', error);
+      } else if (data) {
+        setProducts(data as Product[]);
+      }
+      setLoading(false);
+    }
+
+    fetchProducts();
+  }, []);
+
+  const categories = ['All Drops', 'Hoodies', 'Sweatshirts'];
+
+  let filtered = activeCategory === 'All Drops' 
+    ? products 
+    : products.filter((p) => p.category?.toLowerCase() === activeCategory.toLowerCase());
 
   if (sortBy === 'Price: Low to High') {
-    filtered = [...filtered].sort((a, b) => a.price - b.price);
+    filtered = [...filtered].sort((a, b) => a.selling_price - b.selling_price);
   } else if (sortBy === 'Price: High to Low') {
-    filtered = [...filtered].sort((a, b) => b.price - a.price);
+    filtered = [...filtered].sort((a, b) => b.selling_price - a.selling_price);
   }
-
-  const handleAdd = (product: Product) => {
-    onAddToBag(product);
-    setAdded(product.id);
-    setTimeout(() => setAdded(null), 1500);
-  };
 
   const handleCardClick = (product: Product) => {
     navigate(`/product/${product.id}`);
   };
 
+  if (loading) {
+    return <div className="text-center py-20 text-white bg-black">Loading Nyvor Catalog...</div>;
+  }
+
   return (
-    <section id="shop" className="relative py-20 lg:py-28 border-hairline-t">
+    <section id="shop" className="relative py-20 lg:py-28 border-hairline-t bg-black text-white">
       <div className="mx-auto max-w-[1600px] px-5 lg:px-8">
+        
         {/* Header */}
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-10">
           <div className="space-y-3">
-            <p className="text-xs tracking-wide-label text-brand uppercase">
-              The Collection
-            </p>
-            <h2 className="font-display text-3xl lg:text-5xl tracking-ultra-tight text-accent">
-THE COLLECTION
-            </h2>
+            <p className="text-xs tracking-wide-label text-brand uppercase">The Collection</p>
+            <h2 className="font-display text-3xl lg:text-5xl tracking-ultra-tight text-accent">THE COLLECTION</h2>
           </div>
 
           {/* Sort dropdown */}
           <div className="relative">
             <button
               onClick={() => setSortOpen(!sortOpen)}
-              className="flex items-center gap-2 px-5 py-2.5 border-hairline text-sm text-accent hover:bg-ink-raised rounded-sm transition-all duration-300"
+              className="flex items-center gap-2 px-5 py-2.5 border-hairline text-sm text-accent rounded-sm"
             >
-              <span className="text-accent-muted">Sort:</span>
-              {sortBy}
+              <span className="text-accent-muted">Sort:</span> {sortBy}
               <ChevronDown className={`h-4 w-4 transition-transform duration-300 ${sortOpen ? 'rotate-180' : ''}`} />
             </button>
             {sortOpen && (
-              <div className="absolute right-0 top-full mt-2 w-56 bg-ink-raised border-hairline rounded-sm p-2 z-20 animate-fade-in">
-                {sortOptions.map((option) => (
+              <div className="absolute right-0 top-full mt-2 w-56 bg-neutral-900 border border-neutral-800 rounded-sm shadow-xl z-50">
+                {['Featured', 'Price: Low to High', 'Price: High to Low'].map((option) => (
                   <button
                     key={option}
                     onClick={() => {
                       setSortBy(option);
                       setSortOpen(false);
                     }}
-                    className={`w-full text-left px-4 py-2.5 text-sm rounded-sm transition-colors ${
-                      sortBy === option
-                        ? 'text-brand bg-ink-overlay'
-                        : 'text-accent-muted hover:text-accent hover:bg-ink-overlay'
+                    className={`w-full text-left px-4 py-2.5 text-sm transition-colors ${
+                      sortBy === option ? 'text-white bg-neutral-800' : 'text-neutral-400 hover:text-white hover:bg-neutral-800'
                     }`}
                   >
                     {option}
@@ -87,10 +132,8 @@ THE COLLECTION
             <button
               key={cat}
               onClick={() => setActiveCategory(cat)}
-              className={`px-5 py-2.5 text-xs tracking-wide-label uppercase whitespace-nowrap rounded-sm transition-all duration-300 ${
-                activeCategory === cat
-                  ? 'bg-accent text-ink-base'
-                  : 'text-accent-muted hover:text-accent border-hairline hover:bg-ink-raised'
+              className={`px-5 py-2.5 text-xs tracking-wide-label uppercase whitespace-nowrap rounded-sm transition-colors ${
+                activeCategory === cat ? 'bg-white text-black font-bold' : 'text-neutral-400 border border-neutral-800 hover:text-white hover:border-neutral-600'
               }`}
             >
               {cat}
@@ -99,81 +142,33 @@ THE COLLECTION
         </div>
 
         {/* Grid */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-px bg-line border-hairline rounded-sm overflow-hidden">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 bg-neutral-900/50">
           {filtered.map((product) => (
             <div
               key={product.id}
-              className="group bg-ink-base hover:bg-ink-raised transition-colors duration-500 cursor-pointer"
               onClick={() => handleCardClick(product)}
+              className="group bg-neutral-900 hover:bg-neutral-800/80 transition-colors duration-300 cursor-pointer p-4 rounded flex flex-col justify-between"
             >
-              {/* Image */}
-              <div className="relative aspect-[4/5] overflow-hidden bg-ink-overlay">
-                <img
-                  src={product.images[0]}
-                  alt={product.name}
-                  className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-ink-base/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-
-                {/* Tag */}
-                {product.tag && (
-                  <div className="absolute top-3 left-3 px-2.5 py-1 bg-ink-base/80 backdrop-blur-sm border-hairline text-[10px] tracking-wide-label text-brand uppercase rounded-sm">
-                    {product.tag}
-                  </div>
-                )}
-
-                {/* Quick add */}
+              <div>
+                <div className="relative aspect-[4/5] overflow-hidden bg-neutral-800 rounded mb-4 flex items-center justify-center">
+                  <span className="text-neutral-500 text-xs uppercase tracking-wider">Nyvor Drop</span>
+                </div>
+                <p className="text-[10px] tracking-wide-label text-neutral-400 uppercase">{product.category}</p>
+                <h3 className="text-sm text-white truncate font-medium mt-1">{product.name}</h3>
+              </div>
+              <div className="mt-4 flex items-center justify-between">
+                <span className="font-mono text-sm text-white">₹{product.selling_price?.toLocaleString('en-IN')}</span>
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
-                    handleAdd(product);
+                    if (onAddToBag) onAddToBag(product);
+                    setAdded(product.id);
+                    setTimeout(() => setAdded(null), 1500);
                   }}
-                  className={`absolute bottom-3 left-3 right-3 py-3 text-xs tracking-wide-label uppercase font-semibold rounded-sm transition-all duration-500 ${
-                    added === product.id
-                      ? 'bg-success text-white translate-y-0 opacity-100'
-                      : 'bg-accent text-ink-base translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100'
-                  }`}
+                  className="px-3 py-1.5 bg-white text-black text-xs font-medium rounded hover:bg-neutral-200 transition-colors"
                 >
-                  {added === product.id ? (
-                    <span className="flex items-center justify-center gap-2">
-                      <Check className="h-4 w-4" /> Added
-                    </span>
-                  ) : (
-                    'Add to Bag'
-                  )}
+                  {added === product.id ? 'Added!' : 'View Options'}
                 </button>
-              </div>
-
-              {/* Info */}
-              <div className="p-4 lg:p-5 space-y-3">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="space-y-1 min-w-0">
-                    <p className="text-[10px] tracking-wide-label text-accent-dim uppercase">
-                      {product.category}
-                    </p>
-                    <h3 className="text-sm text-accent truncate font-medium">
-                      {product.name}
-                    </h3>
-                  </div>
-                  <p className="font-mono text-sm text-accent whitespace-nowrap">
-                    ₹{product.price.toLocaleString('en-IN')}
-                  </p>
-                </div>
-
-                {/* Color swatches */}
-                <div className="flex items-center gap-2">
-                  {product.colors.map((color) => (
-                    <button
-                      key={color.name}
-                      title={color.name}
-                      className="h-4 w-4 rounded-full border-hairline hover:scale-110 transition-transform duration-200"
-                      style={{ backgroundColor: color.hex }}
-                    />
-                  ))}
-                  <span className="text-[10px] text-accent-dim ml-1">
-                    {product.colors.length} {product.colors.length === 1 ? 'colour' : 'colours'}
-                  </span>
-                </div>
               </div>
             </div>
           ))}
@@ -181,20 +176,10 @@ THE COLLECTION
 
         {filtered.length === 0 && (
           <div className="py-20 text-center">
-            <p className="text-accent-muted">No products in this category yet.</p>
+            <p className="text-neutral-400">No products in this category yet.</p>
           </div>
         )}
 
-        {/* View all */}
-        <div className="mt-12 flex justify-center">
-          <a
-            href="#"
-            className="group flex items-center gap-2 px-8 py-4 border-hairline text-sm tracking-wide-label uppercase text-accent hover:bg-ink-raised transition-all duration-300 rounded-sm"
-          >
-            View All Products
-            <Plus className="h-4 w-4 transition-transform duration-300 group-hover:rotate-90" />
-          </a>
-        </div>
       </div>
     </section>
   );
