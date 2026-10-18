@@ -20,6 +20,8 @@ interface Product {
   description: string;
   selling_price: number;
   category: string;
+  image_url?: string;
+  image?: string;
   product_variants: Variant[];
 }
 
@@ -46,6 +48,8 @@ export function ProductGrid({ onAddToBag }: Props) {
           description,
           selling_price,
           category,
+          image_url,
+          image,
           product_variants (
             id,
             color,
@@ -143,35 +147,46 @@ export function ProductGrid({ onAddToBag }: Props) {
 
         {/* Grid */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 bg-neutral-900/50">
-          {filtered.map((product) => (
-            <div
-              key={product.id}
-              onClick={() => handleCardClick(product)}
-              className="group bg-neutral-900 hover:bg-neutral-800/80 transition-colors duration-300 cursor-pointer p-4 rounded flex flex-col justify-between"
-            >
-              <div>
-                <div className="relative aspect-[4/5] overflow-hidden bg-neutral-800 rounded mb-4 flex items-center justify-center">
-                  <span className="text-neutral-500 text-xs uppercase tracking-wider">Nyvor Drop</span>
+          {filtered.map((product) => {
+            const imgSrc = product.image_url || product.image;
+            return (
+              <div
+                key={product.id}
+                onClick={() => handleCardClick(product)}
+                className="group bg-neutral-900 hover:bg-neutral-800/80 transition-colors duration-300 cursor-pointer p-4 rounded flex flex-col justify-between"
+              >
+                <div>
+                  <div className="relative aspect-[4/5] overflow-hidden bg-neutral-800 rounded mb-4 flex items-center justify-center">
+                    {imgSrc ? (
+                      <img 
+                        src={imgSrc} 
+                        alt={product.name} 
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                    ) : (
+                      <span className="text-neutral-500 text-xs uppercase tracking-wider">Nyvor Drop</span>
+                    )}
+                  </div>
+                  <p className="text-[10px] tracking-wide-label text-neutral-400 uppercase">{product.category}</p>
+                  <h3 className="text-sm text-white truncate font-medium mt-1">{product.name}</h3>
                 </div>
-                <p className="text-[10px] tracking-wide-label text-neutral-400 uppercase">{product.category}</p>
-                <h3 className="text-sm text-white truncate font-medium mt-1">{product.name}</h3>
+                <div className="mt-4 flex items-center justify-between">
+                  <span className="font-mono text-sm text-white">₹{product.selling_price?.toLocaleString('en-IN')}</span>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (onAddToBag) onAddToBag(product);
+                      setAdded(product.id);
+                      setTimeout(() => setAdded(null), 1500);
+                    }}
+                    className="px-3 py-1.5 bg-white text-black text-xs font-medium rounded hover:bg-neutral-200 transition-colors"
+                  >
+                    {added === product.id ? 'Added!' : 'View Options'}
+                  </button>
+                </div>
               </div>
-              <div className="mt-4 flex items-center justify-between">
-                <span className="font-mono text-sm text-white">₹{product.selling_price?.toLocaleString('en-IN')}</span>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    if (onAddToBag) onAddToBag(product);
-                    setAdded(product.id);
-                    setTimeout(() => setAdded(null), 1500);
-                  }}
-                  className="px-3 py-1.5 bg-white text-black text-xs font-medium rounded hover:bg-neutral-200 transition-colors"
-                >
-                  {added === product.id ? 'Added!' : 'View Options'}
-                </button>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         {filtered.length === 0 && (
@@ -184,3 +199,4 @@ export function ProductGrid({ onAddToBag }: Props) {
     </section>
   );
 }
+
