@@ -1,0 +1,16 @@
+{
+	"telemetryDisabled": false,
+	"cliId": "25d80b88-5dd1-424a-ac19-9a0251ae865f",
+	"userId": "6ab81e48a3cdab73ca81a867",
+	"users": {
+		"6ab81e48a3cdab73ca81a867": {
+			"id": "6ab81e48a3cdab73ca81a867",
+			"name": "Priyanshu Pandey",
+			"email": "nyvorcircle@gmail.com",
+			"auth": {
+				"token": "nfc_UzEp3BwyaqhCSmzGLBpxGhngFFKHAmcd7b86",
+				"github": {}
+			}
+		}
+	}
+}
