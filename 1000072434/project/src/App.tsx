@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+ import { useState, useEffect, useCallback } from 'react';
 import { supabase } from './supabase';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { Header } from '@/components/Header';
@@ -14,14 +14,23 @@ import { AboutPage } from '@/components/AboutPage';
 import { CheckoutPage } from '@/components/CheckoutPage';
 import type { Product } from '@/data/products';
 
+// ScrollToTop component ensures navigation resets window view to top
+function ScrollToTop() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return null;
+}
+
 function AppContent() {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [cartOpen, setCartOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-
-  const location = useLocation();
 
   useEffect(() => {
     async function loadProducts() {
@@ -39,7 +48,6 @@ function AppContent() {
 
   const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
-  // Robust handleAddToBag with safety normalization to prevent crashes
   const handleAddToBag = useCallback((productInput: any, size: string, quantity: number) => {
     setCartItems((prev) => {
       const normalizedProduct = {
@@ -90,6 +98,7 @@ function AppContent() {
 
   return (
     <div className="min-h-screen bg-ink-base text-accent">
+      <ScrollToTop />
       <Header
         cartCount={cartCount}
         onCartClick={() => setCartOpen(true)}

@@ -50,46 +50,41 @@ export function ProductDetail({ onAddToBag }: Props) {
   const [sizeError, setSizeError] = useState(false);
   const [selectedVariant, setSelectedVariant] = useState<Variant | null>(null);
 
-  // Fetch live product, gallery URLs, qikink_sku, and variants from Supabase
+  // Fetch live product and variants safely using independent queries
   useEffect(() => {
     async function fetchProductDetails() {
       if (!id) return;
       setLoading(true);
 
-      const { data, error } = await supabase
+      // 1. Fetch main product data
+      const { data: productData, error: productError } = await supabase
         .from('products')
-        .select(`
-          id,
-          name,
-          description,
-          category,
-          selling_price,
-          image_url,
-          image,
-          "imageUrl",
-          gallery_urls,
-          qikink_sku,
-          product_variants (
-            id,
-            qikink_sku,
-            color,
-            size,
-            price
-          )
-        `)
+        .select('*')
         .eq('id', id)
         .maybeSingle();
 
-      if (error) {
-        console.error('Error fetching product details:', error);
-      } else if (data) {
-        setProduct(data as Product);
+      if (productError) {
+        console.error('Error fetching product details:', productError);
+        setLoading(false);
+        return;
+      }
+
+      if (productData) {
+        // 2. Fetch variants separately to prevent schema join errors
+        const { data: variantsData } = await supabase
+          .from('product_variants')
+          .select('*')
+          .eq('product_id', id);
+
+        const variants = variantsData || [];
+        setProduct({
+          ...productData,
+          product_variants: variants,
+        } as Product);
 
         // Auto-select initial color if available
-        const variants = data.product_variants || [];
         if (variants.length > 0) {
-          const defaultColor = variants[0].color;
-          setSelectedColor(defaultColor);
+          setSelectedColor(variants[0].color);
         }
       }
       setLoading(false);
@@ -102,7 +97,7 @@ export function ProductDetail({ onAddToBag }: Props) {
   useEffect(() => {
     if (product && product.product_variants && selectedColor && selectedSize) {
       const match = product.product_variants.find(
-        (v) => v.color.toLowerCase() === selectedColor.toLowerCase() && v.size.toUpperCase() === selectedSize.toUpperCase()
+        (v) => v.color?.toLowerCase() === selectedColor.toLowerCase() && v.size?.toUpperCase() === selectedSize.toUpperCase()
       );
       setSelectedVariant(match || null);
     }
@@ -118,9 +113,12 @@ export function ProductDetail({ onAddToBag }: Props) {
 
   if (!product) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center gap-4 pt-20">
+      <div className="min-h-screen flex flex-col items-center justify-center gap-4 pt-20 px-4 text-center">
         <p className="font-display text-2xl text-accent">Product not found</p>
-        <Link to="/" className="text-sm text-brand hover:text-brand-soft transition-colors">
+        <p className="text-xs text-accent-muted max-w-md">
+          The product ID in the URL may be invalid or the product has been removed.
+        </p>
+        <Link to="/" className="mt-2 px-6 py-3 bg-accent text-ink-base text-xs font-bold uppercase tracking-wide rounded-sm hover:bg-white transition-colors">
           Back to shop
         </Link>
       </div>
@@ -134,7 +132,7 @@ export function ProductDetail({ onAddToBag }: Props) {
 
   // Derive unique available colors & sizes
   const availableColors = Array.from(
-    new Set((product.product_variants || []).map((v) => v.color))
+    new Set((product.product_variants || []).map((v) => v.color).filter(Boolean))
   );
   const sizes = ['S', 'M', 'L', 'XL', 'XXL'];
 
@@ -173,7 +171,6 @@ export function ProductDetail({ onAddToBag }: Props) {
 
     const success = handleAddToBag();
     if (success) {
-      // Small timeout ensures cart state propagates safely before routing to checkout
       setTimeout(() => {
         navigate('/checkout');
       }, 50);
@@ -220,7 +217,6 @@ export function ProductDetail({ onAddToBag }: Props) {
               />
             </div>
             
-            {/* Multi-Image Secondary Mockups Grid */}
             {productImages.length > 1 && (
               <div className="grid grid-cols-4 sm:grid-cols-5 gap-3">
                 {productImages.map((img, i) => (
@@ -345,7 +341,7 @@ export function ProductDetail({ onAddToBag }: Props) {
               </div>
             </div>
 
-            {/* Action Buttons: Add to Bag & Buy Now */}
+            {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 pt-2">
               <button
                 onClick={handleAddToBag}
@@ -462,3 +458,4 @@ export function ProductDetail({ onAddToBag }: Props) {
     </div>
   );
 }
+
