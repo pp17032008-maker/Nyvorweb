@@ -8,7 +8,7 @@ type Props = {
   onSearchClick: () => void;
 };
 
-const categories = ['T-Shirts', 'Shirts', 'Hoodies', 'Sweatshirts', 'Jackets', 'Lowers'];
+const categories = ['T-Shirts', 'Shirts', 'Hoodies', 'Sweatshirts', 'Jackets', 'Lowers', 'Dark Catalogue'];
 const navLinks = [
   { label: 'Shop', to: '#shop', isHash: true },
   { label: 'Drops', to: '/drops', isHash: false },

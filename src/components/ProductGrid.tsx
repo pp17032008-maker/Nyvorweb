@@ -61,8 +61,18 @@ export function ProductGrid({ onAddToBag }: Props) {
 
     fetchProducts();
   }, []);
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const detail = (e as CustomEvent<string>).detail;
+      if (detail) {
+        setActiveCategory(detail);
+      }
+    };
+    window.addEventListener("nyvor:select-catalogue", handler);
+    return () => window.removeEventListener("nyvor:select-catalogue", handler);
+  }, []);
 
-  const categories = ['All Drops', 'Hoodies', 'Sweatshirts'];
+  const categories = ['All Drops', 'Hoodies', 'Sweatshirts', 'Dark Catalogue'];
 
   let filtered = products.filter((p) => {
     if (activeCategory === 'All Drops') return true;
