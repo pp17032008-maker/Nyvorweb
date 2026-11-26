@@ -31,7 +31,7 @@ export const Hero: React.FC = () => {
           <img
             src="https://ppytshpklerjdnkljqag.supabase.co/storage/v1/object/public/secondary%20mockups/NYVOR_campaign_2000px.png"
             alt="NYVOR Editorial Campaign"
-            className="w-full h-auto block object-contain"
+            className="w-full aspect-[1080/1350] object-cover object-center block"
           />
 
           <div className="absolute top-3 right-3 px-2.5 py-1 bg-[#0F0F11]/85 backdrop-blur-sm border border-[#2A2A32]">
