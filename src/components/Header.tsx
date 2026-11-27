@@ -158,7 +158,7 @@ export function Header({ cartCount, onCartClick, onSearchClick }: Props) {
       {mobileOpen && (
         <div className="fixed inset-0 z-[60] lg:hidden">
           <div
-            className="absolute inset-0 bg-black/70 backdrop-blur-xs animate-fade-in"
+            className="absolute inset-0 bg-black/45 backdrop-blur-md/70 backdrop-blur-xs animate-fade-in"
             onClick={() => setMobileOpen(false)}
           />
           <div className="absolute left-0 top-0 bottom-0 w-80 max-w-[85vw] bg-[#0F0F11] border-r border-[#24242C] flex flex-col shadow-2xl">

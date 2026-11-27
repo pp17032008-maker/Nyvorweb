@@ -29,7 +29,7 @@ export const Hero: React.FC = () => {
 
         <div className="relative w-full overflow-hidden border border-[#2A2A32] bg-[#141417]">
           <img
-            src="https://ppytshpklerjdnkljqag.supabase.co/storage/v1/object/public/secondary%20mockups/NYVOR_campaign_2000px.png"
+            src="https://ppytshpklerjdnkljqag.supabase.co/storage/v1/object/public/secondary%20mockups/1795786238995.png"
             alt="NYVOR Editorial Campaign"
             className="w-full aspect-[1080/1350] object-cover object-center block"
           />
